@@ -1,16 +1,18 @@
 import { Navigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import useUser from "../hooks/useUser";
 
 const PrivateRoutes = ({ children }:  { children: React.ReactNode }) => {
-  const { user, loading } = {
-    user: { id: '123' },
-    loading: false,
-  };
+  const { user, loading } = useAuth();
+  const {user: profileUser, isLoading} = useUser();
 
-  console.log('PrivateRoutes - user:', user, 'loading:', loading);
-  if (loading) {
+  if (loading || isLoading) {
     return <div>Loading...</div>;
   }
-  if (user) {
+  if(profileUser.role !== "user"){
+    return <Navigate to="/" replace />;
+  }
+  if (user ) {
     return children;
   }
   return <Navigate to="/login" replace />;

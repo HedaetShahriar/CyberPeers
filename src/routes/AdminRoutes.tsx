@@ -1,10 +1,9 @@
 import { Navigate } from "react-router-dom";
+import useUser from "../hooks/useUser";
 
 const AdminRoutes = ({children}: { children: React.ReactNode }) => {
-    const { user, isLoading } = {
-        user: { role: 'admin' },
-        isLoading: false,
-    };
+    const { user, isLoading } = useUser();
+    
     if (isLoading) {
         return <div>Loading...</div>;
     }
