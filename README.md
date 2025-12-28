@@ -1,35 +1,74 @@
-# CyberPeers — Role-Based Admin Panel (Frontend)
+# CyberPeers — Role-Based Admin Panel (MERN)
 
-Role-based admin panel UI built with React + TypeScript + Vite, Tailwind CSS, and shadcn/ui. Authentication is handled via Firebase Auth, and API calls are made to a backend using a Bearer token (Firebase ID token).
+CyberPeers is a role-based Admin Panel built on the MERN stack.
 
-## Links
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS + shadcn/ui
+- **Backend**: Node.js + Express + MongoDB (separate repository)
 
-- Live site : https://cyberpeers.vercel.app
+Authentication is **JWT-based**: the frontend uses Firebase Authentication and includes a **Bearer token** (Firebase ID token — a JWT) in requests to the backend. The backend is responsible for verifying the JWT and enforcing **role-based access control (RBAC)**.
+
+## Project Links
+
+- Live demo: https://cyberpeers.vercel.app
 - Server (API): https://cyberpeers-server.vercel.app/
-- Frontend GitHub: https://github.com/HedaetShahriar/CyberPeers
-- Backend GitHub: https://github.com/HedaetShahriar/CyberPeers-server
+- GitHub (Frontend): https://github.com/HedaetShahriar/CyberPeers
+- GitHub (Backend): https://github.com/HedaetShahriar/CyberPeers-server
 
-# Admin Credentials
+Quick routes:
 
-- Username: admin@example.com
+- Admin Dashboard: https://cyberpeers.vercel.app/admin/dashboard
+- Admin Users: https://cyberpeers.vercel.app/admin/users
+
+## Sample Admin Credentials
+
+- Email: admin@example.com
 - Password: password123
 
 ## Tech Stack
 
-- React + TypeScript + Vite
+- **MERN**: React (frontend) + Node/Express (backend) + MongoDB (database)
 - Tailwind CSS + shadcn/ui (Radix UI primitives)
-- React Router
-- Firebase Authentication
-- Axios + TanStack React Query
+- React Router (protected routes)
+- Firebase Authentication (JWT issuance)
+- Axios + TanStack React Query (data fetching)
+
+## Assignment Requirements Coverage
+
+### Authentication & Access Control
+
+- **JWT-based authentication**: Firebase ID token (JWT) sent as `Authorization: Bearer <token>`
+- **Protected routes**: client-side route guards prevent access without authentication
+- **RBAC enforced on frontend and backend**:
+  - Frontend restricts admin routes and role-specific navigation
+  - Backend must validate JWTs and enforce admin-only endpoints
+
+### Admin Role Capabilities
+
+- Admin dashboard with basic statistics: `/admin/dashboard`
+- View and manage users: `/admin/users`
+- Assign roles (admin/user)
+- Activate/suspend user accounts
+
+### User Role Capabilities
+
+- User dashboard (authenticated): `/dashboard`
+- Profile page (authenticated): `/profile`
+- Restricted access: admin routes and admin APIs are not accessible
+
+### UI Requirements
+
+- Clean, responsive layout
+- Sidebar navigation with role-based visibility
+- Tailwind CSS + shadcn/ui components (including skeleton loaders)
 
 ## Prerequisites
 
 - Node.js 18+ (recommended)
-- npm (comes with Node)
-- A Firebase project (for Auth)
-- A backend API running separately (see “Backend API”)
+- npm
+- A Firebase project (Authentication enabled)
+- Backend API running separately (see “Backend Setup”)
 
-## Quick Start (Step-by-step)
+## Local Setup
 
 ### 1) Install dependencies
 
@@ -37,27 +76,19 @@ Role-based admin panel UI built with React + TypeScript + Vite, Tailwind CSS, an
 npm install
 ```
 
-### 2) Create Firebase project + enable Auth
+### 2) Configure Firebase Authentication
 
-1. Go to Firebase Console → create a project.
-2. Build → Authentication → Get started.
-3. Enable at least:
-   - Email/Password
-   - (Optional) Google
-4. Project Settings → General → “Your apps” → Add a Web App.
-5. Copy the Firebase web config values.
+1. Create a Firebase project.
+2. Enable **Email/Password** authentication (Google is optional).
+3. Create a Firebase Web App and copy the web config values.
 
-### 3) Create environment variables
+### 3) Configure environment variables
 
-This app reads env vars via `import.meta.env`.
-
-Create a file named `.env.local` in the project root:
+Create `.env.local` in the project root (Vite reads these via `import.meta.env`):
 
 ```env
-# Backend API base URL
 VITE_API_URL=http://localhost:5000
 
-# Firebase web config
 VITE_API_KEY=...
 VITE_AUTH_DOMAIN=...
 VITE_PROJECT_ID=...
@@ -66,99 +97,82 @@ VITE_MESSAGING_SENDER_ID=...
 VITE_APP_ID=...
 ```
 
-Where these are used:
+Used in:
 
 - Firebase config: [src/firebase/firebase.config.ts](src/firebase/firebase.config.ts)
-- API base URL: [src/hooks/useAxiosSecure.tsx](src/hooks/useAxiosSecure.tsx), [src/lib/saveUserInDB.ts](src/lib/saveUserInDB.ts)
+- API client: [src/hooks/useAxiosSecure.tsx](src/hooks/useAxiosSecure.tsx)
+- User upsert helper: [src/lib/saveUserInDB.ts](src/lib/saveUserInDB.ts)
 
-### 4) Start the dev server
+### 4) Start the development server
 
 ```bash
 npm run dev
 ```
 
-Vite will print a local URL (usually `http://localhost:5173`).
+Vite will print the local URL (commonly `http://localhost:5173`).
 
-## Backend API (Required)
+## Backend Setup (Required)
 
-This frontend expects an API at `VITE_API_URL` and sends an `Authorization: Bearer <token>` header.
+This frontend depends on the backend repository:
 
-Token details:
+- https://github.com/HedaetShahriar/CyberPeers-server
 
-- The token is a Firebase ID token (`user.getIdToken()` / `getIdToken(user)`)
-- Your backend should verify it and enforce role-based access control.
+Start the backend and set `VITE_API_URL` to its base URL.
 
-Expected endpoints (as currently used by the UI):
+## Backend API Expectations
 
-- `POST /user`
+All protected requests include:
 
-  - Called after login to upsert user info
-  - Used in [src/lib/saveUserInDB.ts](src/lib/saveUserInDB.ts)
+- `Authorization: Bearer <token>`
 
-- `GET /user?email=...`
+Token notes:
 
-  - Fetch current user profile (role/status/createdAt)
-  - Used in [src/hooks/useUser.tsx](src/hooks/useUser.tsx)
+- The token is a Firebase ID token and is a **JWT**.
+- The backend must verify this JWT and enforce RBAC.
 
-- `GET /users?email=...`
+Endpoints used by the frontend:
 
-  - Admin-only: list users
-  - Used in [src/pages/UsersManagement.tsx](src/pages/UsersManagement.tsx)
+- `POST /user` (upsert current user) — [src/lib/saveUserInDB.ts](src/lib/saveUserInDB.ts)
+- `GET /user?email=...` (current user profile) — [src/hooks/useUser.tsx](src/hooks/useUser.tsx)
+- `GET /users?email=...` (admin: list users) — [src/pages/UsersManagement.tsx](src/pages/UsersManagement.tsx)
+- `PATCH /user/role/:id?email=...` (admin: change role)
+- `PATCH /user/status/:id?email=...` (admin: activate/suspend)
+- `GET /admin/stats?email=...` (admin: dashboard stats) — [src/pages/AdminDashboard.tsx](src/pages/AdminDashboard.tsx)
 
-- `PATCH /user/role/:id?email=...`
-
-  - Admin-only: change a user role
-
-- `PATCH /user/status/:id?email=...`
-
-  - Admin-only: suspend/activate user
-
-- `GET /admin/stats?email=...`
-  - Admin-only: dashboard stats
-  - Used in [src/pages/AdminDashboard.tsx](src/pages/AdminDashboard.tsx)
-
-## App Routes (Frontend)
+## Frontend Routes
 
 Routing is defined in [src/routes/router.tsx](src/routes/router.tsx).
 
-- Public
-
-  - `/login`
-  - `/register`
-
-- User (requires auth)
-
-  - `/dashboard`
-  - `/profile`
-
-- Admin (requires auth + admin role)
-  - `/admin/dashboard`
-  - `/admin/users`
+- Public: `/login`, `/register`
+- User (auth required): `/dashboard`, `/profile`
+- Admin (auth + admin role): `/admin/dashboard`, `/admin/users`
 
 Guards:
 
-- Public-only (redirects signed-in users away from auth pages): [src/routes/PublicRoutes.tsx](src/routes/PublicRoutes.tsx)
-- Auth-required: [src/routes/PrivateRoutes.tsx](src/routes/PrivateRoutes.tsx)
-- Admin-only: [src/routes/AdminRoutes.tsx](src/routes/AdminRoutes.tsx)
-- Root redirect based on role: [src/routes/DashboardRedirect.tsx](src/routes/DashboardRedirect.tsx)
+- Public-only: [src/routes/PublicRoutes.tsx](src/routes/PublicRoutes.tsx)
+- Auth required: [src/routes/PrivateRoutes.tsx](src/routes/PrivateRoutes.tsx)
+- Admin only: [src/routes/AdminRoutes.tsx](src/routes/AdminRoutes.tsx)
+- Role-based redirect: [src/routes/DashboardRedirect.tsx](src/routes/DashboardRedirect.tsx)
 
 ## Scripts
 
-- `npm run dev` — start dev server
+- `npm run dev` — start development server
 - `npm run build` — typecheck + production build
-- `npm run preview` — serve the production build locally
+- `npm run preview` — preview the production build locally
 - `npm run lint` — run ESLint
 
 ## Troubleshooting
 
-### “Goes back to /login after refresh”
+### Redirects to `/login` after refresh
 
-This usually happens when the backend rejects the Bearer token (401/403), which triggers logout/redirect in the Axios secure client. Make sure:
+This typically indicates the backend rejected the Bearer token (401/403), which triggers a logout/redirect in the secure Axios client.
 
-- `VITE_API_URL` is correct
-- Backend is verifying Firebase ID tokens
-- Backend returns user profile data for `GET /user?email=...`
+Checklist:
+
+- Confirm `VITE_API_URL` is correct
+- Confirm the backend verifies Firebase ID tokens
+- Confirm `GET /user?email=...` returns the expected profile
 
 ### Missing environment variables
 
-If Firebase initialization fails, double-check `.env.local` values and restart `npm run dev` after editing env vars.
+If Firebase initialization fails, re-check `.env.local` and restart `npm run dev` after changes.
