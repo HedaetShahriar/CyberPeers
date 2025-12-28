@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import useAuth from "../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import UsersManagementSkeleton from "@/components/UsersManagementSkeleton";
 
 type userProps = {
   _id: string;
@@ -28,7 +29,7 @@ export const UsersManagement = () => {
   const axiosSecure = useAxiosSecure();
 
   const {
-    data: users,
+    data: users = [],
     isLoading,
     refetch,
   } = useQuery({
@@ -74,13 +75,7 @@ export const UsersManagement = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p>Loading users...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <UsersManagementSkeleton />;
 
   return (
     <div className="space-y-6">
@@ -147,100 +142,94 @@ export const UsersManagement = () => {
         </div>
       </div>
       {/* Users Table */}
-        <div>
-          <Table >
-            <TableHeader>
+      <div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>User</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Joined</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="lg:h-94 overflow-y-scroll">
+            {users.length === 0 ? (
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableCell colSpan={6} className="text-center py-4">
+                  No users found.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody className="lg:h-94 overflow-y-scroll">
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-4">
-                    Loading users...
-                  </TableCell>
-                </TableRow>
-              ) : users.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-4">
-                    No users found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                users.map((user: userProps, index: number) => (
-                  <TableRow key={user?._id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                            {user?.name.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{user?.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            ID: {index + 1}
-                          </p>
-                        </div>
+            ) : (
+              users.map((user: userProps, index: number) => (
+                <TableRow key={user?._id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                          {user?.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{user?.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          ID: {index + 1}
+                        </p>
                       </div>
-                    </TableCell>
-                    <TableCell>{user?.email}</TableCell>
-                    <TableCell>
-                      <select
-                        value={user?.role}
-                        onChange={(e) =>
-                          handleRoleChange(
-                            user?._id,
-                            e.target.value as "admin" | "user"
-                          )
-                        }
-                        className="flex h-9 w-32 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                      >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          user.status === "active" ? "default" : "destructive"
-                        }
-                      >
-                        {user.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(user.createdAt).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant={
-                          user.status === "active" ? "destructive" : "default"
-                        }
-                        onClick={() =>
-                          handleStatusToggle(user?._id, user?.status)
-                        }
-                      >
-                        {user?.status === "active" ? "Suspend" : "Activate"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>{user?.email}</TableCell>
+                  <TableCell>
+                    <select
+                      value={user?.role}
+                      onChange={(e) =>
+                        handleRoleChange(
+                          user?._id,
+                          e.target.value as "admin" | "user"
+                        )
+                      }
+                      className="flex h-9 w-32 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        user.status === "active" ? "default" : "destructive"
+                      }
+                    >
+                      {user.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(user.createdAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      variant={
+                        user.status === "active" ? "destructive" : "default"
+                      }
+                      onClick={() =>
+                        handleStatusToggle(user?._id, user?.status)
+                      }
+                    >
+                      {user?.status === "active" ? "Suspend" : "Activate"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

@@ -102,7 +102,7 @@ const Register = () => {
               <Input
                 id="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -113,7 +113,7 @@ const Register = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
