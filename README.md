@@ -9,6 +9,10 @@ Role-based admin panel UI built with React + TypeScript + Vite, Tailwind CSS, an
 - Frontend GitHub: https://github.com/HedaetShahriar/CyberPeers
 - Backend GitHub: https://github.com/HedaetShahriar/CyberPeers-server
 
+# Admin Credentials
+ Username: admin@example.com
+ Password: password123
+
 ## Tech Stack
 
 - React + TypeScript + Vite
