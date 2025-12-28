@@ -19,8 +19,8 @@ export const UnauthorizedPage = () => {
           </p>
         </div>
         <div className="flex gap-4 justify-center">
-          <Link to="/dashboard">
-            <Button>Go to Dashboard</Button>
+          <Link to={"-1"}>
+            <Button>Go Back</Button>
           </Link>
           <Link to="/login">
             <Button variant="outline">Sign Out</Button>

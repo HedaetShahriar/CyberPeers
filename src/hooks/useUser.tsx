@@ -17,9 +17,10 @@ const useUser = () => {
       return data;
     },
   });
+
   return {
-    user: userData,
-    isLoading: isProfileLoading,
+    user: userData ?? null,
+    isLoading: loading || isProfileLoading,
   };
 };
 
