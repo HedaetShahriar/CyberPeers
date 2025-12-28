@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, User, Shield, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +21,7 @@ import useUser from "../hooks/useUser";
 
 const AppSidebar = () => {
   const { logOut } = useAuth();
-  const {user, isLoading} = useUser();
+  const { user, isLoading } = useUser();
   const location = useLocation();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -37,7 +38,7 @@ const AppSidebar = () => {
     { path: "/profile", label: "Profile", icon: User },
   ];
 
-  const navItems = isLoading ? [] : user?.role === "admin" ? adminNavItems : userNavItems;
+  const navItems = user?.role === "admin" ? adminNavItems : userNavItems;
 
   const handleLogout = () => {
     logOut();
@@ -55,7 +56,13 @@ const AppSidebar = () => {
               CyberPeers
             </h1>
             <p className="text-[11px] text-muted-foreground truncate">
-              {isLoading ? "Loading..." : user?.role === "admin" ? "Admin Panel" : "User Portal"}
+              {isLoading ? (
+                <Skeleton className="h-3 w-16" />
+              ) : user?.role === "admin" ? (
+                "Admin Panel"
+              ) : (
+                "User Portal"
+              )}
             </p>
           </div>
         </div>
@@ -66,23 +73,32 @@ const AppSidebar = () => {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="ml-1.5">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.path)}
-                      tooltip={item.label}
-                    >
-                      <Link to={item.path}>
-                        <Icon className="w-5 h-5" />
-                        <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+              {isLoading
+                ? [0, 1, 2].map((idx) => (
+                    <SidebarMenuItem key={idx}>
+                      <SidebarMenuButton tooltip="Loading">
+                        <Skeleton className="h-5 w-5" />
+                        <Skeleton className="h-4 w-24" />
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                : navItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <SidebarMenuItem key={item.path}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive(item.path)}
+                          tooltip={item.label}
+                        >
+                          <Link to={item.path}>
+                            <Icon className="w-5 h-5" />
+                            <span>{item.label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -118,10 +134,10 @@ const AppSidebar = () => {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {isLoading ? "Loading..." : user?.name}
+                  {isLoading ? <Skeleton className="h-4 w-28" /> : user?.name}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {isLoading ? "Loading..." : user?.email}
+                  {isLoading ? <Skeleton className="h-3 w-40" /> : user?.email}
                 </p>
               </div>
             </div>

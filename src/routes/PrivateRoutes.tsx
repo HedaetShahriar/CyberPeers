@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import MainLayoutSkeleton from "../layout/MainLayoutSkeleton";
 
 const PrivateRoutes = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <MainLayoutSkeleton />;
   }
 
   if (!user) {

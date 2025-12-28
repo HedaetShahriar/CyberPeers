@@ -10,6 +10,7 @@ import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
+import { Skeleton } from "../components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import {
   User,
@@ -31,7 +32,11 @@ const ProfilePage = () => {
   const { user: AuthUser, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: user, isLoading , refetch} = useQuery({
+  const {
+    data: user,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["user", AuthUser?.email],
     enabled: !loading && !!AuthUser?.email,
     queryFn: async () => {
@@ -67,8 +72,7 @@ const ProfilePage = () => {
         bio,
         location,
         website,
-        updatedAt: new Date().toISOString()
-
+        updatedAt: new Date().toISOString(),
       };
       setIsSaving(true);
       await axiosSecure.patch(
@@ -114,15 +118,19 @@ const ProfilePage = () => {
 
             <div className="text-center w-full">
               <h2 className="font-bold text-base">
-                {isLoading ? "Loading..." : user?.name}
+                {isLoading ? (
+                  <Skeleton className="h-5 w-36 mx-auto" />
+                ) : (
+                  user?.name
+                )}
               </h2>
               <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5 mt-1">
                 <Mail className="h-3 w-3" />
-                {isLoading ? "Loading..." : user?.email}
+                {isLoading ? <Skeleton className="h-3 w-44" /> : user?.email}
               </p>
               <Badge className="bg-primary text-primary-foreground border-0 text-xs px-2 py-0.5 mt-2">
                 <Award className="h-2.5 w-2.5 mr-1" />
-                {isLoading ? "Loading..." : user?.role }
+                {isLoading ? <Skeleton className="h-3 w-12" /> : user?.role}
               </Badge>
             </div>
 

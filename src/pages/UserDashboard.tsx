@@ -9,6 +9,7 @@ import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
+import { Skeleton } from "../components/ui/skeleton";
 
 type ActivityItem = {
   action: string;
@@ -19,7 +20,7 @@ export const UserDashboard = () => {
   const { user: AuthUser, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ["user", AuthUser?.email],
     enabled: !loading && !!AuthUser?.email,
     queryFn: async () => {
@@ -30,7 +31,7 @@ export const UserDashboard = () => {
     },
   });
 
-  const { data: activities, isLoading: activityLoading } = useQuery({
+  const { data: activities = [], isLoading: activityLoading } = useQuery({
     queryKey: ["activities", AuthUser?.email],
     enabled: !loading && !!AuthUser?.email,
     queryFn: async () => {
@@ -42,6 +43,11 @@ export const UserDashboard = () => {
   });
 
   const initials = (user?.name || "User").slice(0, 1).toUpperCase();
+  const createdAtDate = user?.createdAt ? new Date(user.createdAt) : null;
+  const memberSinceText =
+    createdAtDate && !Number.isNaN(createdAtDate.getTime())
+      ? createdAtDate.toLocaleDateString()
+      : "—";
 
   return (
     <div className="space-y-4">
@@ -52,7 +58,11 @@ export const UserDashboard = () => {
               <div>
                 <p className="text-xs text-muted-foreground">Role</p>
                 <p className="mt-1 text-xl font-semibold text-foreground capitalize">
-                  {user?.role ?? "user"}
+                  {userLoading ? (
+                    <Skeleton className="h-7 w-20" />
+                  ) : (
+                    user?.role ?? "user"
+                  )}
                 </p>
               </div>
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
@@ -68,7 +78,11 @@ export const UserDashboard = () => {
               <div>
                 <p className="text-xs text-muted-foreground">Status</p>
                 <p className="mt-1 text-xl font-semibold text-foreground capitalize">
-                  {user?.status ?? "active"}
+                  {userLoading ? (
+                    <Skeleton className="h-7 w-20" />
+                  ) : (
+                    user?.status ?? "active"
+                  )}
                 </p>
               </div>
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary">
@@ -84,7 +98,11 @@ export const UserDashboard = () => {
               <div>
                 <p className="text-xs text-muted-foreground">Days active</p>
                 <p className="mt-1 text-xl font-semibold text-foreground">
-                  {user?.daysActive ?? "—"}
+                  {userLoading ? (
+                    <Skeleton className="h-7 w-16" />
+                  ) : (
+                    user?.daysActive ?? "—"
+                  )}
                 </p>
               </div>
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
@@ -100,7 +118,11 @@ export const UserDashboard = () => {
               <div>
                 <p className="text-xs text-muted-foreground">User ID</p>
                 <p className="mt-1 text-xl font-semibold text-foreground">
-                  #{user?._id.slice(0, 4) ?? "—"}
+                  {userLoading ? (
+                    <Skeleton className="h-7 w-16" />
+                  ) : (
+                    `#${user?._id?.slice(0, 4) ?? "—"}`
+                  )}
                 </p>
               </div>
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
@@ -120,18 +142,30 @@ export const UserDashboard = () => {
           </CardHeader>
           <CardContent className="pt-0 pb-4">
             <div className="flex items-center gap-3">
-              <Avatar className="h-11 w-11 border border-border">
-                <AvatarFallback className="bg-primary text-primary-foreground text-base font-semibold">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              {userLoading ? (
+                <Skeleton className="h-11 w-11 rounded-full" />
+              ) : (
+                <Avatar className="h-11 w-11 border border-border">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-base font-semibold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              )}
 
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-foreground">
-                  {user?.name ?? "User"}
+                  {userLoading ? (
+                    <Skeleton className="h-4 w-28" />
+                  ) : (
+                    user?.name ?? "User"
+                  )}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {user?.email ?? "—"}
+                  {userLoading ? (
+                    <Skeleton className="h-3 w-40" />
+                  ) : (
+                    user?.email ?? "—"
+                  )}
                 </p>
               </div>
             </div>
@@ -144,7 +178,11 @@ export const UserDashboard = () => {
                     Email
                   </p>
                   <p className="truncate text-sm text-foreground">
-                    {user?.email ?? "—"}
+                    {userLoading ? (
+                      <Skeleton className="h-4 w-40" />
+                    ) : (
+                      user?.email ?? "—"
+                    )}
                   </p>
                 </div>
               </div>
@@ -156,7 +194,11 @@ export const UserDashboard = () => {
                     Role
                   </p>
                   <p className="text-sm font-medium text-foreground capitalize">
-                    {user?.role ?? "user"}
+                    {userLoading ? (
+                      <Skeleton className="h-4 w-16" />
+                    ) : (
+                      user?.role ?? "user"
+                    )}
                   </p>
                 </div>
               </div>
@@ -168,8 +210,11 @@ export const UserDashboard = () => {
                     Member since
                   </p>
                   <p className="text-sm font-medium text-foreground">
-                    {new Date(user?.createdAt ?? "").toLocaleDateString() ??
-                      "__"}
+                    {userLoading ? (
+                      <Skeleton className="h-4 w-24" />
+                    ) : (
+                      memberSinceText
+                    )}
                   </p>
                 </div>
               </div>
@@ -186,9 +231,20 @@ export const UserDashboard = () => {
           <CardContent className="pt-0 pb-4">
             <div className="space-y-3">
               {activityLoading ? (
-                <p className="text-sm text-muted-foreground">
-                  Loading activities...
-                </p>
+                <div className="space-y-3">
+                  {[0, 1, 2].map((idx) => (
+                    <div key={idx} className="flex gap-3">
+                      <div className="flex flex-col items-center">
+                        <Skeleton className="h-9 w-9 rounded-md" />
+                        <div className="mt-2 w-px flex-1 bg-border" />
+                      </div>
+                      <div className="flex-1 rounded-md border border-border bg-card px-3 py-2 space-y-2">
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : activities.length > 0 ? (
                 activities?.map((activity: ActivityItem, index: number) => {
                   const Icon = activity.action.toLowerCase().includes("login")
@@ -213,7 +269,9 @@ export const UserDashboard = () => {
                           {activity.action}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {activity.timestamp === 0 ? "Today": `${activity.timestamp} days ago`} 
+                          {activity.timestamp === 0
+                            ? "Today"
+                            : `${activity.timestamp} days ago`}
                         </p>
                       </div>
                     </div>
@@ -222,8 +280,8 @@ export const UserDashboard = () => {
               ) : (
                 <div className="flex items-center justify-center">
                   <p className="text-sm text-muted-foreground">
-                  No recent activities.
-                </p>
+                    No recent activities.
+                  </p>
                 </div>
               )}
             </div>

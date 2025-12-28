@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
 import useAuth from "../hooks/useAuth";
+import MainLayoutSkeleton from "../layout/MainLayoutSkeleton";
 
 function DashboardRedirect() {
   const { user: authUser, loading: authLoading } = useAuth();
@@ -8,7 +9,7 @@ function DashboardRedirect() {
 
   // Firebase session restoration is async; don't redirect early on refresh.
   if (authLoading) {
-    return <div>Loading...</div>;
+    return <MainLayoutSkeleton />;
   }
 
   if (!authUser) {
@@ -18,7 +19,7 @@ function DashboardRedirect() {
   // Profile fetch can fail (API down, token rejected, etc.).
   // If we have an authenticated Firebase user, keep them in the app.
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <MainLayoutSkeleton />;
   }
 
   return user?.role === "admin" ? (
