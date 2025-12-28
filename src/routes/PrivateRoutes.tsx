@@ -9,7 +9,7 @@ const PrivateRoutes = ({ children }:  { children: React.ReactNode }) => {
   if (loading || isLoading) {
     return <div>Loading...</div>;
   }
-  if(profileUser.role !== "user"){
+  if(profileUser?.role !== "user"){
     return <Navigate to="/" replace />;
   }
   if (user ) {

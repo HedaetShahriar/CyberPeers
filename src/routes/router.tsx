@@ -6,6 +6,10 @@ import AdminRoutes from "./AdminRoutes";
 import DashboardRedirect from "./DashboardRedirect";
 import MainLayout from "../layout/MainLayout";
 import PublicRoutes from "./PublicRoutes";
+import { AdminDashboard } from "../pages/AdminDashboard";
+import { UsersManagement } from "../pages/UsersManagement";
+import { UserDashboard } from "../pages/UserDashboard";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -37,8 +41,8 @@ const router = createBrowserRouter([
       </AdminRoutes>
     ),
     children: [
-      { path: "dashboard", element: <div>Admin Dashboard</div> },
-      { path: "users", element: <div>User Management</div> },
+      { path: "dashboard", element:<AdminDashboard /> },
+      { path: "users", element: <UsersManagement /> },
     ],
   },
 
@@ -50,8 +54,8 @@ const router = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
-      { path: "/dashboard", element: <div>User Dashboard</div> },
-      { path: "/profile", element: <div>User Profile</div> },
+      { path: "/dashboard", element: <UserDashboard /> },
+      { path: "/profile", element: <ProfilePage /> },
     ],
   },
 
