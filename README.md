@@ -2,6 +2,13 @@
 
 Role-based admin panel UI built with React + TypeScript + Vite, Tailwind CSS, and shadcn/ui. Authentication is handled via Firebase Auth, and API calls are made to a backend using a Bearer token (Firebase ID token).
 
+## Links
+
+- Live site : https://cyberpeers.vercel.app
+- Server (API): https://cyberpeers-server.vercel.app/
+- Frontend GitHub: https://github.com/HedaetShahriar/CyberPeers
+- Backend GitHub: https://github.com/HedaetShahriar/CyberPeers-server
+
 ## Tech Stack
 
 - React + TypeScript + Vite
