@@ -1,12 +1,16 @@
 // import useAuth from "../hooks/useAuth";
 import useUser from "../hooks/useUser";
+import useTheme from "../hooks/useTheme";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import { SidebarTrigger, useSidebar } from "./ui/sidebar";
+import { Moon, Sun } from "lucide-react";
 
 const Header = () => {
   //   const { user } = useAuth();
   const { user, isLoading } = useUser();
+  const { resolvedTheme, toggleTheme } = useTheme();
   const { state, isMobile } = useSidebar();
 
   const desktopLeft =
@@ -35,6 +39,21 @@ const Header = () => {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-9 w-9 p-0"
+              aria-label="Toggle theme"
+              title="Toggle theme"
+              onClick={toggleTheme}
+            >
+              {resolvedTheme === "dark" ? (
+                <Moon className="h-4 w-4" />
+              ) : (
+                <Sun className="h-4 w-4" />
+              )}
+            </Button>
+
             <Badge variant="default" className="text-xs capitalize">
               {isLoading ? <Skeleton className="h-3 w-12" /> : user?.role}
             </Badge>

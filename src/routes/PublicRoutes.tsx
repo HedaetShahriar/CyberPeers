@@ -13,8 +13,6 @@ const PublicRoutes = ({ children }: Props) => {
   if (loading) {
     return <MainLayoutSkeleton />;
   }
-
-  // If already signed in, block access to /login and /register.
   if (user) {
     return <Navigate to="/" replace />;
   }

@@ -1,10 +1,4 @@
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import {
   Table,
   TableBody,
   TableCell,
@@ -153,12 +147,8 @@ export const UsersManagement = () => {
         </div>
       </div>
       {/* Users Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Users</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
+        <div>
+          <Table >
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
@@ -169,7 +159,7 @@ export const UsersManagement = () => {
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="lg:h-94 overflow-y-scroll">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-4">
@@ -250,8 +240,7 @@ export const UsersManagement = () => {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
     </div>
   );
 };

@@ -116,13 +116,13 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <Card className="border border-border">
-        <CardHeader className=" border-b">
-          <CardTitle className="text-base font-semibold">
+      <div className="border border-border rounded-lg bg-background">
+        <div className=" border-b">
+          <h1 className="text-base font-semibold p-4">
             Recent Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h1>
+        </div>
+        <div className="p-4 space-y-4 lg:h-76 overflow-y-auto">
           {isLoading ? (
             <p className="text-sm text-muted-foreground">
               Loading recent activities...
@@ -159,8 +159,8 @@ export const AdminDashboard = () => {
               No recent activities.
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { AdminDashboard } from "../pages/AdminDashboard";
 import { UsersManagement } from "../pages/UsersManagement";
 import { UserDashboard } from "../pages/UserDashboard";
 import ProfilePage from "../pages/ProfilePage";
+import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
       </PublicRoutes>
     ),
   },
-  { path: "/unauthorized", element: <h1>Unauthorized Access</h1> },
+  { path: "/unauthorized", element: <UnauthorizedPage /> },
 
   { path: "/", element: <DashboardRedirect /> },
 

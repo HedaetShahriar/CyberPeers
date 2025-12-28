@@ -135,7 +135,7 @@ export const UserDashboard = () => {
 
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="border border-border shadow-none lg:col-span-1">
-          <CardHeader className="py-4">
+          <CardHeader className="border-b pb-0 mb-0">
             <CardTitle className="text-base font-semibold text-foreground">
               Profile
             </CardTitle>
@@ -223,12 +223,12 @@ export const UserDashboard = () => {
         </Card>
 
         <Card className="border border-border shadow-none lg:col-span-2">
-          <CardHeader className="py-4">
+          <CardHeader className="border-b pb-0 mb-0">
             <CardTitle className="text-base font-semibold text-foreground">
               Recent Activity
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0 pb-4">
+          <CardContent className="pt-0 mt-0 pb-4 lg:h-86 lg:overflow-y-scroll ">
             <div className="space-y-3">
               {activityLoading ? (
                 <div className="space-y-3">

@@ -13,6 +13,8 @@ import { Button } from "../components/ui/button";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import saveUserInDB from "../lib/saveUserInDB";
+import useTheme from "../hooks/useTheme";
+import { Moon, Sun } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +24,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signInWithEmail } = useAuth();
   const navigate = useNavigate();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +48,23 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4 relative">
+      <div className="absolute top-4 right-4">
+        <Button
+          type="button"
+          variant="ghost"
+          className="h-9 w-9 p-0"
+          aria-label="Toggle theme"
+          title="Toggle theme"
+          onClick={toggleTheme}
+        >
+          {resolvedTheme === "dark" ? (
+            <Moon className="h-4 w-4" />
+          ) : (
+            <Sun className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
